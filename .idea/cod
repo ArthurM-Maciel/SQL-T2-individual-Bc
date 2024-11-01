@@ -1,0 +1,65 @@
+CREATE TABLE PESSOAS (
+                         CODIGO CHAR(8) NOT NULL,
+                         NOME VARCHAR(150),
+                         PRIMARY KEY (CODIGO)
+);
+
+CREATE TABLE CLIENTES (
+                          CODIGO CHAR(8) NOT NULL,
+                          CPF CHAR(11),
+                          PRIMARY KEY (CODIGO),
+                          FOREIGN KEY (CODIGO) REFERENCES PESSOAS(CODIGO)
+);
+
+CREATE TABLE FORNECEDORES (
+                              CODIGO CHAR(8) NOT NULL,
+                              CNPJ CHAR(18),
+                              PRIMARY KEY (CODIGO),
+                              FOREIGN KEY (CODIGO) REFERENCES PESSOAS(CODIGO)
+);
+
+CREATE TABLE PRODUTOS (
+                          COD_PROD NUMERIC(5) NOT NULL,
+                          DESCRICAO VARCHAR(200),
+                          CODIGO CHAR(8) NOT NULL,
+                          QTD_ESTOQUE NUMERIC(4),
+                          PRECO NUMERIC(10,2),
+                          PRIMARY KEY (COD_PROD),
+                          FOREIGN KEY (CODIGO) REFERENCES FORNECEDORES(CODIGO)
+);
+
+CREATE TABLE VENDAS (
+                        NOTA_FISCAL NUMERIC(10) NOT NULL,
+                        DATA_VENDA DATE NOT NULL,
+                        CODIGO CHAR(8) NOT NULL,
+                        PRIMARY KEY (NOTA_FISCAL),
+                        FOREIGN KEY (CODIGO) REFERENCES CLIENTES(CODIGO)
+);
+
+CREATE TABLE ITENS_VENDIDOS (
+                                NOTA_FISCAL NUMERIC(10) NOT NULL,
+                                COD_PROD NUMERIC(5) NOT NULL,
+                                QUANTIDADE NUMERIC(4),
+                                DESCONTO NUMERIC(3),
+                                PRECO NUMERIC(10,2),
+                                PRIMARY KEY (NOTA_FISCAL, COD_PROD),
+                                FOREIGN KEY (NOTA_FISCAL) REFERENCES VENDAS(NOTA_FISCAL),
+                                FOREIGN KEY (COD_PROD) REFERENCES PRODUTOS(COD_PROD)
+);
+
+CREATE TABLE PROMOCOES (
+                           COD_PROMO NUMERIC(8) NOT NULL,
+                           NOME_PROMO VARCHAR(50),
+                           DATA_INI DATE,
+                           DATA_FIM DATE,
+                           PRIMARY KEY (COD_PROMO)
+);
+
+CREATE TABLE ITENS_PROMO (
+                             COD_PROMO NUMERIC(8) NOT NULL,
+                             COD_PROD NUMERIC(5) NOT NULL,
+                             DESCONTO NUMERIC(3),
+                             PRIMARY KEY (COD_PROMO, COD_PROD),
+                             FOREIGN KEY (COD_PROMO) REFERENCES PROMOCOES(COD_PROMO),
+                             FOREIGN KEY (COD_PROD) REFERENCES PRODUTOS(COD_PROD)
+);
